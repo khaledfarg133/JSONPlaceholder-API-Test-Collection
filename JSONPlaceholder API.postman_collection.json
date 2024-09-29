@@ -1,0 +1,1092 @@
+{
+	"info": {
+		"_postman_id": "15fb664a-5f12-4e9a-a3d2-272e50947638",
+		"name": "JSONPlaceholder API",
+		"description": "A collection of endpoints for interacting with the JSONPlaceholder API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38356251"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "GET All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status code is 200.\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//Verify that the response is of type JSON.\r",
+									"pm.test(\" The Response is an array\", function () {\r",
+									"pm.response.to.be.json;\r",
+									"});\r",
+									"\r",
+									"//Verify that the response time is less than 1 second\r",
+									"pm.test(\" Verify that the response time is less than 1 second\", function () {\r",
+									"pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Check if the response body is an array.\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"//Verify the number of users returned is 10 user\r",
+									"pm.test(\"Response is the number of users returned is 10 user\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.lengthOf(10);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Verify first user has required fields\", function () {\r",
+									"    var jsonData = pm.response.json()[0];\r",
+									"    pm.expect(jsonData).to.have.property('id');\r",
+									"    pm.expect(jsonData).to.have.property('name');\r",
+									"    pm.expect(jsonData).to.have.property('username');\r",
+									"    pm.expect(jsonData).to.have.property('email');\r",
+									"   \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/users/",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Single User by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status code is 200.\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//Verify that the response time is less than 1 second\r",
+									"pm.test(\" Verify that the response time is less than 1 second\", function () {\r",
+									"pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Confirm that the user ID in the response matches the requested ID.\r",
+									"pm.test(\"the user ID in the response matches the requested ID\", function () {\r",
+									"    pm.expect(pm.response.json().id).to.eql(1);\r",
+									"});\r",
+									"\r",
+									"//Validate that the user's name is a not-empty string.\r",
+									"pm.test(\"the user's name is a non-empty string\", function () {\r",
+									"    pm.expect(pm.response.json().name).to.be.a('string').that.is.not.empty;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/users/1",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Non-Existent User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status code is 404.\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/users/55",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"users",
+								"55"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User's Todos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each post has correct structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    jsonData.forEach(function (post) {\r",
+									"        pm.expect(post).to.have.property('id');\r",
+									"        pm.expect(post).to.have.property('userId', 1);\r",
+									"        pm.expect(post).to.have.property('title');\r",
+									"        pm.expect(post).to.have.property('completed');\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/users/1/todos",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"todos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User's Albums",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each post has correct structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    jsonData.forEach(function (post) {\r",
+									"        pm.expect(post).to.have.property('id');\r",
+									"        pm.expect(post).to.have.property('userId', 1);\r",
+									"        pm.expect(post).to.have.property('title');\r",
+									"        \r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/users/1/albums",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"albums"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status code is 201.\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"//Ensure the name, username, and email Match the Request Data:\r",
+									"var requestData  = {\r",
+									"   name: \"Khaled\",\r",
+									"  username: \"Khaled farg\",\r",
+									"  email: \"Khaled@example.com\"\r",
+									"};\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"name, username, and email Match the Request Data\", function () {\r",
+									"    pm.expect(jsonData.name).to.eql(requestData.name);\r",
+									"    pm.expect(jsonData.username).to.eql(requestData.username);\r",
+									"    pm.expect(jsonData.email).to.eql(requestData.email);\r",
+									"});\r",
+									"\r",
+									"//second solution to Ensure the name, username, and email Match the Request Data:\r",
+									"pm.test(\"name, username, and email Match the Request Data\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('name', 'Khaled');\r",
+									"    pm.expect(pm.response.json()).to.have.property('username', 'Khaled farg');\r",
+									"    pm.expect(pm.response.json()).to.have.property('email', 'Khaled@example.com');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//third solution to Ensure the name, username, and email Match the Request Data:\r",
+									"pm.test(\"name, username, and email Match the Request Data\", function () {\r",
+									"const responseBody = pm.response.json();\r",
+									"pm.expect(responseBody.name).to.eql('Khaled');\r",
+									"pm.expect(responseBody.username).to.eql('Khaled farg');\r",
+									"pm.expect(responseBody.email).to.eql('Khaled@example.com');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Khaled\",\r\n  \"username\": \"Khaled farg\",\r\n  \"email\": \"Khaled@example.com\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_Base}}/users/",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Verify the Status Code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//Ensure the Update (name, username, and email)Match the Request Data:\r",
+									"var requestData  = {\r",
+									"   name: \"Updated User\",\r",
+									"  username: \"updateduser\",\r",
+									"  email: \"updateduser@example.com\"\r",
+									"};\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"name, username, and email Match the Request Data\", function () {\r",
+									"    pm.expect(jsonData.name).to.eql(requestData.name);\r",
+									"    pm.expect(jsonData.username).to.eql(requestData.username);\r",
+									"    pm.expect(jsonData.email).to.eql(requestData.email);\r",
+									"});\r",
+									"\r",
+									"//another solution to Ensure the Update (name, username, and email)Match the Request Data:\r",
+									"pm.test(\"name, username, and email Match the Request Data\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('name', 'Updated User');\r",
+									"    pm.expect(pm.response.json()).to.have.property('username', 'updateduser');\r",
+									"    pm.expect(pm.response.json()).to.have.property('email', 'updateduser@example.com');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Updated User\",\r\n  \"username\": \"updateduser\",\r\n  \"email\": \"updateduser@example.com\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_Base}}/users/1",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the response status code is 200.\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"/*\r",
+									"// Ensure that the response type is empty or the body is empty.\r",
+									"pm.test(\" the response type is empty or the body is empty\", function () {\r",
+									"    pm.expect(pm.response.text()).to.be.empty;\r",
+									"});\r",
+									"*/\r",
+									"// Verify the response time is under 1 second.\r",
+									"pm.test(\" the response time is under 1 second\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_Base}}/users/1",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Get All Posts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Verify status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has correct structure\", function () {\r",
+									"    var jsonData = pm.response.json()[0];\r",
+									"\r",
+									" //Ensure each post object contains the expected fields (userId, id, title, body).\r",
+									"    pm.expect(jsonData).to.have.property('userId');\r",
+									"    pm.expect(jsonData).to.have.property('id');\r",
+									"    pm.expect(jsonData).to.have.property('title');\r",
+									"    pm.expect(jsonData).to.have.property('body');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/posts",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Post by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has correct structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('userId');\r",
+									"    //Ensure the post ID in the response matches the requested ID.\r",
+									"    pm.expect(jsonData).to.have.property('id', 1);\r",
+									"    //Check if the response contains (title , body)\r",
+									"    pm.expect(jsonData).to.have.property('title');\r",
+									"    pm.expect(jsonData).to.have.property('body');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/posts/1",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"posts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User's Posts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each post has correct structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    jsonData.forEach(function (post) {\r",
+									"        pm.expect(post).to.have.property('id');\r",
+									"        pm.expect(post).to.have.property('userId', 1);\r",
+									"        pm.expect(post).to.have.property('title');\r",
+									"        pm.expect(post).to.have.property('body');\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/users/1/posts",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a New Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Verify the Status Code is 201\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//Ensure the title, body, and userId Match the Request Data:\r",
+									"var requestData  = {\r",
+									"    title: \"New khaled's Post\",\r",
+									"    body: \"This is a new post from khaled.\",\r",
+									"    userId: 1\r",
+									"};\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Title, body, and userId match\", function () {\r",
+									"    pm.expect(jsonData.title).to.eql(requestData.title);\r",
+									"    pm.expect(jsonData.body).to.eql(requestData.body);\r",
+									"    pm.expect(jsonData.userId).to.eql(requestData.userId);\r",
+									"});\r",
+									"\r",
+									"//Check if a New id is Returned for the Post:\r",
+									"//You want to verify that the response contains a new id that didn’t exist in the jsonData.\r",
+									"pm.test(\"New ID is returned\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(jsonData.id).to.exist;\r",
+									"    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"New khaled's Post\",\n  \"body\": \"This is a new post from khaled.\",\n  \"userId\": 1\n}\n"
+						},
+						"url": {
+							"raw": "{{URL_Base}}/posts",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Verify the Status Code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//Ensure the title and body Match the Updated Data:\r",
+									"var updatedData   = {\r",
+									"    title: \"Updated Post Title\",\r",
+									"    body: \"This post has been updated.\"\r",
+									"};\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Title, body, and userId match\", function () {\r",
+									"    pm.expect(jsonData.title).to.eql(updatedData .title);\r",
+									"    pm.expect(jsonData.body).to.eql(updatedData .body);\r",
+									"   \r",
+									"});\r",
+									"\r",
+									"//Check if the id and userId Remain Unchanged\r",
+									"pm.test(\"ID and userId remain unchanged\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.eql(1);  // Ensure the ID is still 1\r",
+									"    pm.expect(jsonData.userId).to.eql(1);  // Ensure the userId remains the same\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 1,\n  \"title\": \"Updated Post Title\",\n  \"body\": \"This post has been updated.\",\n  \"userId\": 1\n}\n"
+						},
+						"url": {
+							"raw": "{{URL_Base}}/posts/1",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"posts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Post (Partial)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Verify the Status Code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//Ensure the title is updated while body and userId remain unchanged:\r",
+									"var updatedTitle = \"Partially Updated Title\";  \r",
+									"// i get this body from get method(NO:2,Get Post by ID(id=1))  \r",
+									"var unchangedBody = \"quia et suscipit\\nsuscipit recusandae consequuntur expedita et cum\\nreprehenderit molestiae ut ut quas totam\\nnostrum rerum est autem sunt rem eveniet architecto\"; \r",
+									"// i get this ID from get method(NO:2,Get Post by ID(id=1))  \r",
+									"var unchangedUserId = 1; \r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Title is updated while body and userId remain unchanged\", function () {\r",
+									"    pm.expect(jsonData.title).to.eql(updatedTitle);  // Check updated title\r",
+									"    pm.expect(jsonData.userId).to.eql(unchangedUserId);  // Ensure userId is unchanged\r",
+									"    pm.expect(jsonData.body).to.eql(unchangedBody);  // Ensure body is unchanged\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Partially Updated Title\"\n}\n"
+						},
+						"url": {
+							"raw": "{{URL_Base}}/posts/1",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"posts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"/*\r",
+									"//Ensure the Response is Empty\r",
+									"pm.test(\"Response is empty or confirms deletion\", function () {\r",
+									"    var jsonData = pm.response.json(); // Get response as text\r",
+									"\r",
+									"    pm.expect(jsonData).to.satisfy(function(response) {\r",
+									"        return response == \"\" || response == \"{}\";\r",
+									"});\r",
+									"});*/\r",
+									"//------------------------------------------------------------------------------------------\r",
+									"/*pm.test(\"Response is empty or confirms deletion\", function () {\r",
+									"    let responseBody = pm.response.text();  // Get response as text\r",
+									"\r",
+									"    pm.expect(responseBody).to.be.oneOf([\"\", {}]);  // Check if response is empty or an empty object\r",
+									"});\r",
+									"*/\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/posts/1",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"posts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comment",
+			"item": [
+				{
+					"name": "GET All Comments for User with ID 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Ensure the response status code is 200.\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//validate that the response body is an array.\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"//Verify that the response time is less than 1 second\r",
+									"pm.test(\" Verify that the response time is less than 1 second\", function () {\r",
+									"pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Ensure that each object in the array has the expected comment properties\r",
+									"pm.test(\"Each comment has correct structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    jsonData.forEach(function (comment) {\r",
+									"        pm.expect(comment).to.have.property('id');\r",
+									"        pm.expect(comment).to.have.property('postId');\r",
+									"        pm.expect(comment).to.have.property('name');\r",
+									"        pm.expect(comment).to.have.property('email');\r",
+									"        pm.expect(comment).to.have.property('body');\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/users/1/comments",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comments for a Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each comment has correct structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    jsonData.forEach(function (comment) {\r",
+									"        pm.expect(comment).to.have.property('id');\r",
+									"        pm.expect(comment).to.have.property('postId', 1);\r",
+									"        pm.expect(comment).to.have.property('name');\r",
+									"        pm.expect(comment).to.have.property('email');\r",
+									"        pm.expect(comment).to.have.property('body');\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/posts/1/comments",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"posts",
+								"1",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comments by Post ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each comment has correct structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    jsonData.forEach(function (comment) {\r",
+									"        pm.expect(comment).to.have.property('id');\r",
+									"        pm.expect(comment).to.have.property('postId', 1);\r",
+									"        pm.expect(comment).to.have.property('name');\r",
+									"        pm.expect(comment).to.have.property('email');\r",
+									"        pm.expect(comment).to.have.property('body');\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/comments?postId=1",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"comments"
+							],
+							"query": [
+								{
+									"key": "postId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"created comment contains the correct data\", function () {\r",
+									"    const comment = pm.response.json();\r",
+									"pm.expect(comment.postId).to.eql( '1' );\r",
+									"pm.expect(comment.name).to.eql('Test Comment');\r",
+									"pm.expect(comment.email).to.eql('test@example.com');\r",
+									"pm.expect(comment.body).to.eql('This is a test comment.');\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"postId\": 1,\r\n  \"name\": \"Test Comment\",\r\n  \"email\": \"test@example.com\",\r\n  \"body\": \"This is a test comment.\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://jsonplaceholder.typicode.com/posts/1/comments",
+							"protocol": "https",
+							"host": [
+								"jsonplaceholder",
+								"typicode",
+								"com"
+							],
+							"path": [
+								"posts",
+								"1",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Albums",
+			"item": [
+				{
+					"name": "Get Album's Photos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_Base}}/albums/1/photos",
+							"host": [
+								"{{URL_Base}}"
+							],
+							"path": [
+								"albums",
+								"1",
+								"photos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
